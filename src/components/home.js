@@ -1,5 +1,4 @@
 import Footer from './footer';
-import LanguageSwitcher from './languageswitcher';
 import Level from './level';
 import MapExplorer from './mapexplorer';
 import Minigraph from './minigraph';
@@ -23,6 +22,7 @@ import {
 import 'intersection-observer';
 import Observer from '@researchgate/react-intersection-observer';
 import axios from 'axios';
+import i18n from 'i18next';
 import React, {useState, useCallback, useMemo} from 'react';
 import * as Icon from 'react-feather';
 import {Helmet} from 'react-helmet';
@@ -181,7 +181,7 @@ function Home(props) {
               <h5>
                 {isNaN(Date.parse(formatDate(lastUpdated)))
                   ? ''
-                  : formatDateAbsolute(lastUpdated)}
+                  : `${formatDateAbsolute(lastUpdated, i18n.language)} IST`}
               </h5>
               {fetched && !showUpdates && (
                 <div className="bell-icon">
@@ -190,7 +190,6 @@ function Home(props) {
                 </div>
               )}
               {fetched && showUpdates && BellOff}
-              <LanguageSwitcher />
             </div>
           </div>
 

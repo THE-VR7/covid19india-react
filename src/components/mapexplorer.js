@@ -8,11 +8,13 @@ import {
   MAP_VIEWS,
   STATE_CODES_REVERSE,
   STATE_POPULATIONS,
+  LOCALE_SHORTHANDS,
 } from '../constants';
 import {formatDate, formatNumber} from '../utils/commonfunctions';
 
 import {formatDistance, format, parse} from 'date-fns';
 import equal from 'fast-deep-equal';
+import i18n from 'i18next';
 import React, {useState, useEffect, useMemo, useCallback} from 'react';
 import ReactDOM from 'react-dom';
 import * as Icon from 'react-feather';
@@ -336,11 +338,13 @@ function MapExplorer({
           {t(currentMap.name)} {t('Map')}
         </h1>
         <h6>
-          {window.innerWidth <= 769 ? t('Tap') : t('Hover')} over a{' '}
-          {currentMapMeta.mapType === MAP_TYPES.COUNTRY
-            ? t('state/UT')
-            : t('district')}{' '}
-          {t('for more details')}
+          {t('{{action}} over a {{mapType}} for more details', {
+            action: window.innerWidth <= 769 ? 'Tap' : 'Hover',
+            mapType:
+              currentMapMeta.mapType === MAP_TYPES.COUNTRY
+                ? 'state/UT'
+                : 'district',
+          })}
         </h6>
       </div>
 
@@ -411,10 +415,12 @@ function MapExplorer({
           </div>
           <h6 className="timestamp">
             {!isNaN(parse(testObj?.updatedon, 'dd/MM/yyyy', new Date()))
-              ? `${t('As of')} ${format(
-                  parse(testObj?.updatedon, 'dd/MM/yyyy', new Date()),
-                  'dd MMM'
-                )}`
+              ? t('As of {{date}}', {
+                  date: format(
+                    parse(testObj?.updatedon, 'dd/MM/yyyy', new Date()),
+                    'dd MMM'
+                  ),
+                })
               : ''}
           </h6>
           {testObj?.totaltested?.length > 1 && (
@@ -450,7 +456,10 @@ function MapExplorer({
                   ? ''
                   : formatDistance(
                       new Date(formatDate(panelRegion.lastupdatedtime)),
-                      new Date()
+                      new Date(),
+                      {
+                        locale: LOCALE_SHORTHANDS[i18n.language],
+                      }
                     ) +
                     ' ' +
                     t('ago')}
@@ -580,18 +589,18 @@ function MapExplorer({
               });
           }}
         >
-          <h4>Zones</h4>
+          <h4>{t('Zones')}</h4>
         </div>
       </div>
 
       <h6 className="footnote table-fineprint">
-        &dagger; {t('Based on 2019 population projection by NCP') + '('}
+        &dagger; {t('Based on 2019 population projection by NCP') + ' ('}
         <a
           href="https://nhm.gov.in/New_Updates_2018/Report_Population_Projection_2019.pdf"
           target="_noblank"
           style={{color: '#6c757d'}}
         >
-          {t('report')}
+          {t('source')}
         </a>
         )
       </h6>
